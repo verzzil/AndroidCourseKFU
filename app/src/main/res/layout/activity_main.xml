@@ -1,18 +1,512 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    android:layout_height="match_parent">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Hello World!"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".MainActivity">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+
+        <!--  LINES  -->
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/line_1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.03" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/line_2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.97" />
+
+        <!--  HEADER   -->
+
+        <TextView
+            android:id="@+id/userId"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:padding="13dp"
+            android:text="verzzila"
+            android:textColor="#000"
+            android:textSize="25sp"
+            android:textStyle="bold"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintHorizontal_weight="7"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toLeftOf="@+id/qrIcon"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/qrIcon"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:padding="10dp"
+            app:layout_constraintBottom_toBottomOf="@+id/userId"
+            app:layout_constraintHorizontal_weight="1"
+            app:layout_constraintLeft_toRightOf="@+id/userId"
+            app:layout_constraintRight_toLeftOf="@+id/customIcon"
+            app:layout_constraintTop_toTopOf="@+id/userId"
+            app:srcCompat="@drawable/ic_top_qrcode" />
+
+        <ImageView
+            android:id="@+id/customIcon"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:padding="10dp"
+            android:src="@drawable/ic_top_custom"
+            app:layout_constraintBottom_toBottomOf="@+id/qrIcon"
+            app:layout_constraintHorizontal_weight="1"
+            app:layout_constraintLeft_toRightOf="@+id/qrIcon"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/qrIcon" />
+
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_height="2dp"
+            android:background="@drawable/gray_border_bottom"
+            app:layout_constraintLeft_toLeftOf="@+id/line_1"
+            app:layout_constraintRight_toLeftOf="@+id/line_2"
+            app:layout_constraintTop_toBottomOf="@+id/userId" />
+
+
+        <!--  PROFILE DATA  -->
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/userPhoto"
+            android:layout_width="90dp"
+            android:layout_height="90dp"
+            android:layout_marginTop="10dp"
+            android:padding="5dp"
+            android:scaleType="centerCrop"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintHorizontal_weight="1"
+            app:layout_constraintLeft_toLeftOf="@id/line_1"
+            app:layout_constraintRight_toLeftOf="@+id/userName"
+            app:layout_constraintTop_toBottomOf="@+id/userId"
+            app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App.CornerSize50Percent"
+            app:srcCompat="@drawable/avatar" />
+
+        <TextView
+            android:id="@+id/userName"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:paddingLeft="10dp"
+            android:text="Альберт Ханнанов"
+            android:textColor="#000"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            app:layout_constraintHorizontal_weight="1.5"
+            app:layout_constraintLeft_toRightOf="@+id/userPhoto"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/userPhoto" />
+
+        <TextView
+            android:id="@+id/userStatus"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:paddingLeft="10dp"
+            android:text="step by step"
+            android:textColor="#000"
+            android:textSize="15sp"
+            app:layout_constraintLeft_toLeftOf="@+id/userName"
+            app:layout_constraintRight_toRightOf="@+id/userName"
+            app:layout_constraintTop_toBottomOf="@+id/userName" />
+
+        <TextView
+            android:id="@+id/userOnline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:minHeight="30dp"
+            android:paddingLeft="10dp"
+            android:text="online"
+            android:textColor="#818785"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toBottomOf="@+id/userPhoto"
+            app:layout_constraintBottom_toTopOf="@+id/editStatus"
+            app:layout_constraintLeft_toLeftOf="@+id/userStatus"
+            app:layout_constraintTop_toBottomOf="@+id/userStatus" />
+
+        <ImageView
+            android:layout_width="12dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintLeft_toRightOf="@+id/userOnline"
+            app:layout_constraintTop_toTopOf="@+id/userOnline"
+            app:srcCompat="@drawable/ic_online" />
+
+        <!--  EDIT STATUS  -->
+        <Button
+            android:id="@+id/editStatus"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/radius_button"
+            android:padding="15dp"
+            android:stateListAnimator="@null"
+            android:text="Редактировать"
+            android:textAllCaps="false"
+            android:textColor="@color/mainColor"
+            android:textSize="15sp"
+            android:textStyle="normal"
+            app:layout_constraintLeft_toLeftOf="@id/line_1"
+            app:layout_constraintRight_toRightOf="@id/line_2"
+            app:layout_constraintTop_toBottomOf="@+id/userOnline" />
+
+        <!--  History, note, photo, clip  -->
+
+        <ImageView
+            android:id="@+id/history"
+            android:layout_width="0dp"
+            android:layout_height="25dp"
+            android:layout_marginTop="5dp"
+            app:layout_constraintBottom_toTopOf="@+id/historyText"
+            app:layout_constraintHorizontal_chainStyle="spread_inside"
+            app:layout_constraintLeft_toLeftOf="@id/line_1"
+            app:layout_constraintRight_toLeftOf="@+id/note"
+            app:layout_constraintTop_toBottomOf="@+id/editStatus"
+            app:srcCompat="@drawable/ic_camera_history" />
+
+        <TextView
+            android:id="@+id/historyText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
+            android:text="История"
+            android:textAlignment="center"
+            android:textColor="@color/mainColor"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            app:layout_constraintLeft_toLeftOf="@id/history"
+            app:layout_constraintRight_toRightOf="@id/history"
+            app:layout_constraintTop_toBottomOf="@id/history" />
+
+        <ImageView
+            android:id="@+id/note"
+            android:layout_width="0dp"
+            android:layout_height="25dp"
+            app:layout_constraintBottom_toTopOf="@+id/noteText"
+            app:layout_constraintLeft_toRightOf="@+id/history"
+            app:layout_constraintRight_toLeftOf="@id/photo"
+            app:layout_constraintTop_toTopOf="@+id/history"
+            app:srcCompat="@drawable/ic_note" />
+
+        <TextView
+            android:id="@+id/noteText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
+            android:text="Запись"
+            android:textAlignment="center"
+            android:textColor="@color/mainColor"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            app:layout_constraintLeft_toLeftOf="@id/note"
+            app:layout_constraintRight_toRightOf="@id/note"
+            app:layout_constraintTop_toBottomOf="@id/note" />
+
+        <ImageView
+            android:id="@+id/photo"
+            android:layout_width="0dp"
+            android:layout_height="25dp"
+            app:layout_constraintBottom_toTopOf="@+id/photoText"
+            app:layout_constraintLeft_toRightOf="@+id/note"
+            app:layout_constraintRight_toLeftOf="@+id/clip"
+            app:layout_constraintTop_toTopOf="@+id/note"
+            app:srcCompat="@drawable/ic_photo" />
+
+        <TextView
+            android:id="@+id/photoText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
+            android:text="Фото"
+            android:textAlignment="center"
+            android:textColor="@color/mainColor"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            app:layout_constraintLeft_toLeftOf="@id/photo"
+            app:layout_constraintRight_toRightOf="@id/photo"
+            app:layout_constraintTop_toBottomOf="@id/photo" />
+
+        <ImageView
+            android:id="@+id/clip"
+            android:layout_width="0dp"
+            android:layout_height="25dp"
+            app:layout_constraintBottom_toTopOf="@+id/clipText"
+            app:layout_constraintLeft_toRightOf="@+id/photo"
+            app:layout_constraintRight_toRightOf="@id/line_2"
+            app:layout_constraintTop_toTopOf="@+id/photo"
+            app:srcCompat="@drawable/ic_clip" />
+
+        <TextView
+            android:id="@+id/clipText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
+            android:text="Клип"
+            android:textAlignment="center"
+            android:textColor="@color/mainColor"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            app:layout_constraintLeft_toLeftOf="@id/clip"
+            app:layout_constraintRight_toRightOf="@id/clip"
+            app:layout_constraintTop_toBottomOf="@id/clip" />
+
+        <ImageView
+            android:id="@+id/horisontalLine"
+            android:layout_width="0dp"
+            android:layout_height="2dp"
+            android:layout_marginTop="5dp"
+            android:background="@drawable/gray_border_bottom"
+            app:layout_constraintLeft_toLeftOf="@+id/line_1"
+            app:layout_constraintRight_toLeftOf="@+id/line_2"
+            app:layout_constraintTop_toBottomOf="@+id/clipText" />
+
+
+        <!--  More information  -->
+
+        <ImageView
+            android:id="@+id/countFriends"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_marginTop="10dp"
+            app:layout_constraintLeft_toLeftOf="@+id/line_1"
+            app:layout_constraintTop_toBottomOf="@+id/horisontalLine"
+            app:srcCompat="@drawable/ic_count_friends" />
+
+        <TextView
+            android:id="@+id/countFriendsText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:text="546 друзей"
+            android:textColor="#7A7E81"
+            android:textSize="15sp"
+            app:layout_constraintBottom_toBottomOf="@id/countFriends"
+            app:layout_constraintLeft_toRightOf="@+id/countFriends"
+            app:layout_constraintTop_toTopOf="@+id/countFriends" />
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/friend1"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:padding="2dp"
+            android:scaleType="centerCrop"
+            app:layout_constraintRight_toLeftOf="@id/line_2"
+            app:layout_constraintTop_toTopOf="@id/countFriends"
+            app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App.CornerSize50Percent"
+            app:srcCompat="@drawable/friend1"
+            app:strokeColor="#fff"
+            app:strokeWidth="3dp" />
+
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/friend2"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginRight="20dp"
+            android:padding="2dp"
+            android:scaleType="centerCrop"
+            app:layout_constraintRight_toLeftOf="@id/line_2"
+            app:layout_constraintTop_toTopOf="@id/friend1"
+            app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App.CornerSize50Percent"
+            app:srcCompat="@drawable/friend2"
+            app:strokeColor="#fff"
+            app:strokeWidth="3dp" />
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/friend3"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginRight="40dp"
+            android:padding="2dp"
+            android:scaleType="centerCrop"
+            app:layout_constraintRight_toLeftOf="@id/line_2"
+            app:layout_constraintTop_toTopOf="@id/friend1"
+            app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App.CornerSize50Percent"
+            app:srcCompat="@drawable/friend3"
+            app:strokeColor="#fff"
+            app:strokeWidth="3dp" />
+
+        <ImageView
+            android:id="@+id/studyIcon"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_marginTop="10dp"
+            app:layout_constraintLeft_toLeftOf="@id/line_1"
+            app:layout_constraintTop_toBottomOf="@id/countFriends"
+            app:srcCompat="@drawable/ic_study" />
+
+        <TextView
+            android:id="@+id/studyIconText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Место учебы: КФУ (бывш. КГУ им. Ульянова-Ленина)"
+            android:textColor="#7A7E81"
+            android:textSize="15sp"
+            app:layout_constraintLeft_toLeftOf="@id/countFriendsText"
+            app:layout_constraintRight_toLeftOf="@id/line_2"
+            app:layout_constraintTop_toTopOf="@id/studyIcon" />
+
+        <ImageView
+            android:id="@+id/countSubsc"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_marginTop="10dp"
+            app:layout_constraintLeft_toLeftOf="@id/line_1"
+            app:layout_constraintTop_toBottomOf="@id/studyIconText"
+            app:srcCompat="@drawable/ic_baseline_wifi_tethering_24" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:text="733 подписчика"
+            android:textColor="#7A7E81"
+            android:textSize="15sp"
+            app:layout_constraintBottom_toBottomOf="@+id/countSubsc"
+            app:layout_constraintLeft_toRightOf="@id/countSubsc"
+            app:layout_constraintTop_toTopOf="@id/countSubsc" />
+
+        <ImageView
+            android:id="@+id/workPlace"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_marginTop="10dp"
+            app:layout_constraintLeft_toRightOf="@id/line_1"
+            app:layout_constraintTop_toBottomOf="@id/countSubsc"
+            app:srcCompat="@drawable/ic_shop" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:text="Укажите место работы"
+            android:textColor="@color/mainColor"
+            android:textSize="15sp"
+            app:layout_constraintBottom_toBottomOf="@+id/workPlace"
+            app:layout_constraintLeft_toRightOf="@id/workPlace"
+            app:layout_constraintTop_toTopOf="@id/workPlace" />
+
+        <ImageView
+            android:id="@+id/info"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_marginTop="15dp"
+            app:layout_constraintLeft_toRightOf="@id/line_1"
+            app:layout_constraintTop_toBottomOf="@id/workPlace"
+            app:srcCompat="@drawable/ic_info" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:text="Подробная информация"
+            android:textColor="@color/mainColor"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@+id/info"
+            app:layout_constraintLeft_toRightOf="@id/info"
+            app:layout_constraintTop_toTopOf="@id/info" />
+
+        <ImageView
+            android:id="@+id/underInfo"
+            android:layout_width="0dp"
+            android:layout_height="2dp"
+            android:layout_marginTop="15dp"
+            app:layout_constraintLeft_toLeftOf="@id/line_1"
+            app:layout_constraintRight_toRightOf="@id/line_2"
+            app:layout_constraintTop_toBottomOf="@id/info"
+            app:srcCompat="@drawable/gray_border_bottom" />
+
+        <!--  Photos  -->
+
+        <TextView
+            android:id="@+id/photoItem"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="Фотографии"
+            android:textAllCaps="true"
+            android:textColor="#000"
+            android:textSize="13sp"
+            android:textStyle="bold"
+            app:layout_constraintLeft_toRightOf="@id/line_1"
+            app:layout_constraintTop_toBottomOf="@+id/underInfo" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:text="64"
+            android:textSize="13sp"
+            app:layout_constraintLeft_toRightOf="@id/photoItem"
+            app:layout_constraintTop_toTopOf="@+id/photoItem" />
+
+        <ImageView
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            app:layout_constraintRight_toLeftOf="@id/line_2"
+            app:layout_constraintTop_toTopOf="@id/photoItem"
+            app:srcCompat="@drawable/ic_photo_right" />
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/photo1"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginTop="10dp"
+            android:paddingLeft="2dp"
+            android:paddingRight="2dp"
+            android:scaleType="centerCrop"
+            app:layout_constraintDimensionRatio="1:1"
+            app:layout_constraintHorizontal_chainStyle="spread_inside"
+            app:layout_constraintLeft_toRightOf="@id/line_1"
+            app:layout_constraintRight_toLeftOf="@id/photo2"
+            app:layout_constraintTop_toBottomOf="@id/photoItem"
+            app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App.CornerSize5Percent"
+            app:srcCompat="@drawable/photo1" />
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/photo2"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:paddingLeft="2dp"
+            android:paddingRight="2dp"
+            android:scaleType="centerCrop"
+            app:layout_constraintDimensionRatio="1:1"
+            app:layout_constraintHorizontal_chainStyle="spread_inside"
+            app:layout_constraintLeft_toRightOf="@id/photo1"
+            app:layout_constraintRight_toLeftOf="@id/photo3"
+            app:layout_constraintTop_toTopOf="@id/photo1"
+            app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App.CornerSize5Percent"
+            app:srcCompat="@drawable/photo2" />
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/photo3"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:paddingLeft="2dp"
+            android:paddingRight="2dp"
+            android:scaleType="centerCrop"
+            app:layout_constraintDimensionRatio="1:1"
+            app:layout_constraintHorizontal_chainStyle="spread_inside"
+            app:layout_constraintLeft_toRightOf="@id/photo2"
+            app:layout_constraintRight_toLeftOf="@id/line_2"
+            app:layout_constraintTop_toTopOf="@id/photo1"
+            app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App.CornerSize5Percent"
+            app:srcCompat="@drawable/photo3" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>
