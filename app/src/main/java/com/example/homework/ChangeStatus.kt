@@ -1,14 +1,11 @@
 package com.example.homework
 
-import android.app.Activity
 import android.app.Dialog
 import android.content.Context
 import android.content.DialogInterface
 import android.os.Bundle
 import androidx.fragment.app.DialogFragment
-import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.dialog_change_status.*
-import java.lang.ClassCastException
 
 
 class ChangeStatus : DialogFragment() {
@@ -34,7 +31,8 @@ class ChangeStatus : DialogFragment() {
         var dialogView = inflater?.inflate(R.layout.dialog_change_status, null)
 
 
-        builder .setView(dialogView)
+        builder
+            .setView(dialogView)
             .setNegativeButton("Отменить",
                 DialogInterface.OnClickListener { dialog, id ->
                     this.dialog?.cancel()

@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".SignInActivity">
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/line_1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.05" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/line_2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.95" />
+
+
+    <ImageView
+        android:id="@+id/vk_icon"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias=".15"
+        app:srcCompat="@drawable/vk_icon" />
+
+    <EditText
+        android:id="@+id/login"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/singin_top_edit_text"
+        android:hint="Email или телефон"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toRightOf="@id/line_1"
+        app:layout_constraintRight_toLeftOf="@id/line_2"
+        app:layout_constraintTop_toBottomOf="@id/vk_icon"
+        app:layout_constraintVertical_bias=".2" />
+
+    <EditText
+        android:id="@+id/password"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/signin_bottom_edit_text"
+        android:hint="Пароль"
+        android:inputType="textPassword"
+        android:paddingRight="100dp"
+        android:textSize="16sp"
+        app:layout_constraintLeft_toRightOf="@id/line_1"
+        app:layout_constraintRight_toLeftOf="@+id/line_2"
+        app:layout_constraintTop_toBottomOf="@id/login" />
+
+    <ImageView
+        android:id="@+id/ic_help"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        app:layout_constraintBottom_toBottomOf="@id/password"
+        app:layout_constraintRight_toRightOf="@id/password"
+        app:layout_constraintTop_toTopOf="@id/password"
+        app:srcCompat="@drawable/ic_help" />
+
+    <ImageView
+        android:id="@+id/show_pass"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="@id/password"
+        app:layout_constraintRight_toLeftOf="@id/ic_help"
+        app:layout_constraintTop_toTopOf="@id/password"
+        app:srcCompat="@drawable/ic_eye" />
+
+    <Button
+        android:id="@+id/entry"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:alpha=".5"
+        android:background="@drawable/entry_button"
+        android:text="Войти"
+        android:textAllCaps="false"
+        android:textColor="#fff"
+        android:textSize="15sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toRightOf="@id/line_1"
+        app:layout_constraintRight_toLeftOf="@id/line_2"
+        app:layout_constraintTop_toBottomOf="@id/password"
+        app:layout_constraintVertical_bias=".05" />
+
+
+    <!--    <com.google.android.material.textfield.TextInputLayout-->
+    <!--        android:id="@+id/ti_name"-->
+    <!--        style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.Dense"-->
+    <!--        android:layout_width="0dp"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        app:layout_constraintEnd_toEndOf="parent"-->
+    <!--        app:layout_constraintStart_toStartOf="parent"-->
+    <!--        app:layout_constraintTop_toTopOf="parent">-->
+
+    <!--        <androidx.appcompat.widget.AppCompatEditText-->
+    <!--            android:id="@+id/et_name"-->
+    <!--            android:layout_width="match_parent"-->
+    <!--            android:layout_height="wrap_content"-->
+    <!--            android:hint="@string/name"-->
+    <!--            android:textSize="16sp" />-->
+    <!--    </com.google.android.material.textfield.TextInputLayout>-->
+
+</androidx.constraintlayout.widget.ConstraintLayout>
