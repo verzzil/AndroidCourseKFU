@@ -6,6 +6,7 @@ import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 
 class BrendAdapter(
+    private val brends: ArrayList<Brend>,
     private val likeClick: (Brend, Int) -> Unit,
     private val click: (Brend) -> Unit
 ) : RecyclerView.Adapter<BrendHolder>() {
@@ -17,10 +18,10 @@ class BrendAdapter(
         )
 
     override fun getItemCount(): Int =
-        Brends.brends.size
+        brends.size
 
     override fun onBindViewHolder(holder: BrendHolder, position: Int) {
-        holder.bind(Brends.brends[position])
+        holder.bind(brends[position])
     }
 
 }
