@@ -29,15 +29,15 @@ class BrendDisc : AppCompatActivity() {
 
 
         like.setOnClickListener {
-            change_like(currentBrend)
+            changeLike(currentBrend)
         }
         count_likes.setOnClickListener {
-            change_like(currentBrend)
+            changeLike(currentBrend)
         }
 
     }
 
-    private fun change_like(currentBrend: Brend) {
+    private fun changeLike(currentBrend: Brend) {
         if (currentBrend.likeIcon == R.drawable.ic_like) {
             currentBrend.likeIcon = R.drawable.ic_like_active
             currentBrend.likes++
