@@ -2,11 +2,12 @@ package com.example.homework
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
+import androidx.core.text.isDigitsOnly
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import com.example.homework.data.Singers
 import com.example.homework.fragments.AddNewItemDialogFragment
+import com.example.homework.fragments.CardFragment
 import com.example.homework.fragments.PlugFragment
 import com.example.homework.fragments.RecyclerFragment
 import com.example.homework.models.Singer
@@ -17,18 +18,23 @@ class MainActivity : AppCompatActivity(), AddNewItemDialogFragment.DialogListene
 
     lateinit var lastFragment: Fragment
     lateinit var recyclerFragment: RecyclerFragment
+    lateinit var plugFragment: PlugFragment
+    lateinit var cardFragment: CardFragment
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         val fragmentId = R.id.frame_layout
-        val plugFragment = PlugFragment()
+        plugFragment = PlugFragment()
         recyclerFragment = RecyclerFragment()
+        cardFragment = CardFragment()
         supportFragmentManager.beginTransaction()
             .add(fragmentId, plugFragment)
             .add(fragmentId, recyclerFragment)
+            .add(fragmentId, cardFragment)
             .hide(recyclerFragment)
+            .hide(cardFragment)
             .commit()
         lastFragment = plugFragment
 
@@ -44,6 +50,11 @@ class MainActivity : AppCompatActivity(), AddNewItemDialogFragment.DialogListene
                     lastFragment = recyclerFragment
                     true
                 }
+                R.id.page_3 -> {
+                    changeFragment(cardFragment)
+                    lastFragment = cardFragment
+                    true
+                }
                 else -> false
             }
         }
@@ -52,10 +63,21 @@ class MainActivity : AppCompatActivity(), AddNewItemDialogFragment.DialogListene
 
     private fun changeFragment(newFragment: Fragment) {
         if (newFragment != lastFragment)
-            supportFragmentManager.beginTransaction()
-                .hide(lastFragment)
-                .show(newFragment)
-                .commit()
+            if (
+                newFragment == plugFragment && (lastFragment == recyclerFragment || lastFragment == cardFragment) ||
+                newFragment == recyclerFragment && lastFragment == cardFragment
+            )
+                supportFragmentManager.beginTransaction()
+                    .setCustomAnimations(R.animator.show_from_left, R.animator.hide_from_right)
+                    .hide(lastFragment)
+                    .show(newFragment)
+                    .commit()
+            else
+                supportFragmentManager.beginTransaction()
+                    .setCustomAnimations(R.animator.show_from_right, R.animator.hide_from_left)
+                    .hide(lastFragment)
+                    .show(newFragment)
+                    .commit()
     }
 
     override fun onDialogPositiveClick(dialog: DialogFragment) {

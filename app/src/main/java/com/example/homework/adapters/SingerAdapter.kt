@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.homework.R
+import com.example.homework.ItemTouchHelperAdapter
 import com.example.homework.data.Singers
 import com.example.homework.dfffutils.SingerDiffCallback
 import com.example.homework.holders.SingerHolder
@@ -15,7 +16,7 @@ class SingerAdapter(
     var list: ArrayList<Singer>,
     private val likeClick: (Int) -> Unit,
     private val removeClick: (Int) -> Unit
-) : RecyclerView.Adapter<SingerHolder>()
+) : RecyclerView.Adapter<SingerHolder>(), ItemTouchHelperAdapter
 {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SingerHolder =
         SingerHolder(
@@ -49,5 +50,11 @@ class SingerAdapter(
             list = newList
             Singers.singers = newList
         }
+    }
+
+    override fun onItemDismiss(item: Int) {
+        val tempArr = Singers.cloneData()
+        tempArr.removeAt(item)
+        updateDataSource(tempArr)
     }
 }

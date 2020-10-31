@@ -5,13 +5,13 @@ import com.example.homework.models.Singer
 
 object Singers {
     var singers = arrayListOf(
-        Singer(1,"Morenshtern","Морген што", R.drawable.morgen, R.drawable.ic_like),
-        Singer(2, "Филипп Киркоров", "Пидарюга", R.drawable.filya, R.drawable.ic_like),
-        Singer(3, "Дима Билан", "Полупидарюга", R.drawable.bilan, R.drawable.ic_like),
-        Singer(4, "Клава Кока", "Кола", R.drawable.koka, R.drawable.ic_like),
-        Singer(5, "Егор Крид", "Пидарюга", R.drawable.krid, R.drawable.ic_like),
-        Singer(6, "Zivert", "Depression", R.drawable.zivert, R.drawable.ic_like),
-        Singer(7, "Тимати", "Лох пидр", R.drawable.timati, R.drawable.ic_like)
+        Singer(27,"Morenshtern","Морген што", R.drawable.morgen, R.drawable.ic_like),
+        Singer(12, "Филипп Киркоров", "Филя", R.drawable.filya, R.drawable.ic_like),
+        Singer(3, "Дима Билан", "Билайн", R.drawable.bilan, R.drawable.ic_like),
+        Singer(40, "Клава Кока", "Кола", R.drawable.koka, R.drawable.ic_like),
+        Singer(29, "Егор Крид", "Сладкий мальчик", R.drawable.krid, R.drawable.ic_like),
+        Singer(60, "Zivert", "Depression", R.drawable.zivert, R.drawable.ic_like),
+        Singer(79, "Тимати", "Black star burger", R.drawable.timati, R.drawable.ic_like)
         )
 
     fun findIndexById(id: Int) : Int {

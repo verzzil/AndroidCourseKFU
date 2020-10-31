@@ -4,11 +4,17 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.ItemTouchHelper
+import androidx.recyclerview.widget.RecyclerView
 import com.example.homework.R
+import com.example.homework.SimpleItemTouchHelperCallback
 import com.example.homework.adapters.SingerAdapter
 import com.example.homework.data.Singers
+import com.example.homework.holders.SingerHolder
 import com.example.homework.models.Singer
+import kotlinx.android.synthetic.main.add_new_item_dialog.*
 import kotlinx.android.synthetic.main.recycler_fragment.*
 
 class RecyclerFragment : Fragment() {
@@ -65,6 +71,9 @@ class RecyclerFragment : Fragment() {
             recycler_singers.scrollToPosition(0)
         }
 
+        val callback = SimpleItemTouchHelperCallback(adapter!!)
+        val touchHelper = ItemTouchHelper(callback)
+        touchHelper.attachToRecyclerView(recycler_singers)
 
     }
 
@@ -82,4 +91,5 @@ class RecyclerFragment : Fragment() {
         adapter?.updateDataSource(newList)
         recycler_singers.scrollToPosition(0)
     }
+    
 }
