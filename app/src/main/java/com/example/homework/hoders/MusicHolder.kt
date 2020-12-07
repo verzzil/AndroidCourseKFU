@@ -22,7 +22,6 @@ class MusicHolder(
 
         itemView.setOnClickListener {
             click(music)
-            Log.i("click","${music}")
         }
 
     }

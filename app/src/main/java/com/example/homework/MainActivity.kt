@@ -1,9 +1,17 @@
 package com.example.homework
 
+import android.content.ComponentName
+import android.content.Context
 import android.content.Intent
+import android.content.ServiceConnection
 import android.media.MediaPlayer
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.IBinder
+import android.os.RemoteException
+import android.support.v4.media.MediaMetadataCompat
+import android.support.v4.media.session.MediaControllerCompat
+import android.support.v4.media.session.PlaybackStateCompat
 import android.util.Log
 import android.widget.SeekBar
 import com.example.homework.adapters.MusicAdapter
@@ -19,88 +27,146 @@ class MainActivity : AppCompatActivity() {
     private var musicRepository: MusicRepository = MusicRepository
     private var seekBar: SeekBar? = null
 
+    var musicServiceBinder: MusicService.MusicServiceBinder? = null
+    var mediaController: MediaControllerCompat? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         seekBar = seek_bar
-
         musicAdapter = MusicAdapter(
-            musicRepository.music
-        ) { music ->
-            trackLaunch(music)
-            musicRepository.currentIndex = music.id
-            changeBottomData(music)
+            MusicRepository.music
+        ) {
+            if (musicRepository.currentIndex == it.id) {
+                if (play_pause.tag == R.drawable.ic_play) {
+                    mediaController?.transportControls?.play()
+                } else {
+                    mediaController?.transportControls?.pause()
+                }
+            } else {
+                musicRepository.currentIndex = it.id
+                mediaController?.transportControls?.play()
+            }
         }
+        play_pause.tag = R.drawable.ic_play
 
         rv_music.adapter = musicAdapter
 
+
+        bindService(
+            Intent(
+                this,
+                MusicService::class.java
+            ),
+            object : ServiceConnection {
+                override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
+                    musicServiceBinder = service as MusicService.MusicServiceBinder
+
+                    try {
+                        mediaController = musicServiceBinder?.getMediaSessionToken()?.let {
+                            MediaControllerCompat(
+                                applicationContext,
+                                it
+                            )
+                        }
+                        mediaController?.registerCallback(
+                            object : MediaControllerCompat.Callback() {
+                                override fun onPlaybackStateChanged(state: PlaybackStateCompat?) {
+                                    if (state == null) {
+                                        return
+                                    }
+                                    var playing = state.state == PlaybackStateCompat.STATE_PLAYING
+                                    var skipNext =
+                                        state.state == PlaybackStateCompat.STATE_SKIPPING_TO_NEXT
+                                    var skipPrev =
+                                        state.state == PlaybackStateCompat.STATE_SKIPPING_TO_PREVIOUS
+                                    var pause = state.state == PlaybackStateCompat.STATE_PAUSED
+
+                                    val currentTrack = musicRepository.getCurrentTrack()
+
+                                    if (pause) {
+                                        play_pause.setImageResource(R.drawable.ic_play)
+                                        play_pause.tag = R.drawable.ic_play
+                                    }
+
+                                    if (skipNext || skipPrev || playing) {
+                                        play_pause.setImageResource(R.drawable.ic_baseline_pause_24)
+                                        play_pause.tag = R.drawable.ic_baseline_pause_24
+                                        music_title.text = currentTrack.trackName
+                                        music_author.text = currentTrack.author
+                                    }
+
+                                }
+
+                                override fun onMetadataChanged(metadata: MediaMetadataCompat?) {
+                                    if (metadata == null)
+                                        return
+                                    seekBar?.max =
+                                        metadata.bundle.getLong(MediaMetadataCompat.METADATA_KEY_DURATION)
+                                            .toInt()
+
+                                    Timer().scheduleAtFixedRate(object : TimerTask() {
+                                        override fun run() {
+                                            seekBar?.progress =
+                                                musicServiceBinder?.getCurrentPosition() ?: 0
+                                        }
+                                    }, 0, 1000)
+
+                                    seekBar?.setOnSeekBarChangeListener(object :
+                                        SeekBar.OnSeekBarChangeListener {
+                                        override fun onProgressChanged(
+                                            seekBar: SeekBar?,
+                                            progress: Int,
+                                            fromUser: Boolean
+                                        ) {
+                                            if (fromUser)
+                                                mediaController?.transportControls?.seekTo(progress.toLong())
+                                            if ((seekBar?.max?.minus(1000))!! <= progress)
+                                                mediaController?.transportControls?.skipToNext()
+                                        }
+
+                                        override fun onStartTrackingTouch(seekBar: SeekBar?) {
+                                            Log.i("update", "update")
+                                        }
+
+                                        override fun onStopTrackingTouch(seekBar: SeekBar?) {
+                                            Log.i("update", "update")
+                                        }
+                                    })
+                                }
+                            }
+                        )
+                    } catch (e: RemoteException) {
+                        mediaController = null
+                    }
+                }
+
+                override fun onServiceDisconnected(name: ComponentName?) {
+                    musicServiceBinder = null
+                    mediaController = null
+                }
+            },
+            Context.BIND_AUTO_CREATE
+        )
+
         play_pause.setOnClickListener {
-            if (mediaPlayer?.isPlaying == true) {
-                play_pause.setImageResource(R.drawable.ic_play)
-                mediaPlayer?.pause()
-            } else {
-                play_pause.setImageResource(R.drawable.ic_baseline_pause_24)
-                mediaPlayer?.start()
+            if (mediaController != null) {
+                if (play_pause.tag == R.drawable.ic_play) {
+                    mediaController?.transportControls?.play()
+                } else {
+                    mediaController?.transportControls?.pause()
+                }
             }
+        }
+
+        skip_to_next.setOnClickListener {
+            mediaController?.transportControls?.skipToNext()
         }
         skip_to_prev.setOnClickListener {
-            if (seekBar?.progress!! > 2000) {
-                seekBar?.progress = 0
-                mediaPlayer?.seekTo(0)
-            } else {
-                val prevTrack = MusicRepository.getPrev()
-                trackLaunch(prevTrack)
-                changeBottomData(prevTrack)
-            }
-
-        }
-        skip_to_next.setOnClickListener {
-            val nextTrack = MusicRepository.getNext()
-            trackLaunch(nextTrack)
-            changeBottomData(nextTrack)
+            mediaController?.transportControls?.skipToPrevious()
         }
 
     }
 
-    private fun changeBottomData(music: Music) {
-        play_pause.setImageResource(R.drawable.ic_baseline_pause_24)
-        music_title.text = music.trackName
-        music_author.text = music.author
-
-        seekBar?.max = mediaPlayer?.duration ?: 0
-
-        Timer().scheduleAtFixedRate(object : TimerTask() {
-            override fun run() {
-                seekBar?.progress = mediaPlayer?.currentPosition ?: 0
-            }
-        }, 0, 1000)
-
-        seekBar?.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                if (fromUser)
-                    mediaPlayer?.seekTo(progress)
-            }
-
-            override fun onStartTrackingTouch(seekBar: SeekBar?) {
-                Log.i("update", "update")
-            }
-
-            override fun onStopTrackingTouch(seekBar: SeekBar?) {
-                Log.i("update", "update")
-            }
-        })
-    }
-
-    private fun trackLaunch(music: Music) {
-        if (mediaPlayer?.isPlaying == true) {
-            mediaPlayer?.stop()
-            mediaPlayer?.release()
-            mediaPlayer = null
-        }
-
-        mediaPlayer = MediaPlayer.create(applicationContext, music.musicTrack)
-        mediaPlayer?.start()
-    }
 }

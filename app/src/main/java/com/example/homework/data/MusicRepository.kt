@@ -13,7 +13,7 @@ object MusicRepository {
         Music(5,"Enrique Iglesias", R.drawable.iglesias, "Bailando", R.raw.iglesias_bailando)
     )
 
-    var maxIndex = music.size - 1
+    private var maxIndex = music.size - 1
     var currentIndex = 0
 
     fun getNext() : Music {
