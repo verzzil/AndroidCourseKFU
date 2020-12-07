@@ -74,6 +74,10 @@ class MainActivity : AppCompatActivity() {
                                 it
                             )
                         }
+                        mediaController?.transportControls?.sendCustomAction(
+                            "get_music_info",
+                            Bundle()
+                        )
                         mediaController?.registerCallback(
                             object : MediaControllerCompat.Callback() {
                                 override fun onPlaybackStateChanged(state: PlaybackStateCompat?) {
@@ -107,8 +111,10 @@ class MainActivity : AppCompatActivity() {
                                     if (metadata == null)
                                         return
 
-                                    music_title.text = metadata.bundle.getString(MediaMetadataCompat.METADATA_KEY_TITLE)
-                                    music_author.text = metadata.bundle.getString(MediaMetadataCompat.METADATA_KEY_ALBUM)
+                                    music_title.text =
+                                        metadata.bundle.getString(MediaMetadataCompat.METADATA_KEY_TITLE)
+                                    music_author.text =
+                                        metadata.bundle.getString(MediaMetadataCompat.METADATA_KEY_ALBUM)
 
                                     seekBar?.max =
                                         metadata.bundle.getLong(MediaMetadataCompat.METADATA_KEY_DURATION)
@@ -132,8 +138,6 @@ class MainActivity : AppCompatActivity() {
                                                 mediaController?.transportControls?.seekTo(progress.toLong())
                                             if ((seekBar?.max?.minus(1000))!! <= progress)
                                                 mediaController?.transportControls?.skipToNext()
-
-                                            Log.i("mediaController", "${mediaController}")
 
                                         }
 
@@ -178,8 +182,6 @@ class MainActivity : AppCompatActivity() {
         skip_to_prev.setOnClickListener {
             mediaController?.transportControls?.skipToPrevious()
         }
-
-
 
     }
 

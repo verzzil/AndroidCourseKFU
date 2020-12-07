@@ -106,7 +106,7 @@ class MusicService : Service() {
         return super.onStartCommand(intent, flags, startId)
     }
 
-    val mediaSessionCallback = object : MediaSessionCompat.Callback() {
+    private val mediaSessionCallback = object : MediaSessionCompat.Callback() {
 
         private var currentMusicId: Int? = null
 
@@ -127,7 +127,6 @@ class MusicService : Service() {
             prepareToPlay(music.musicTrack)
 
             mediaPlayer.start()
-
             updateMetadataFromMusic(music)
             currentState = PlaybackStateCompat.STATE_PLAYING
 
@@ -296,7 +295,6 @@ class MusicService : Service() {
                 )
             )
         )
-        Log.i("state", "$playbackState")
         if (playbackState == PlaybackStateCompat.STATE_PLAYING ||
             playbackState == PlaybackStateCompat.STATE_SKIPPING_TO_NEXT ||
             playbackState == PlaybackStateCompat.STATE_SKIPPING_TO_PREVIOUS
@@ -360,11 +358,6 @@ class MusicService : Service() {
         fun getCurrentPosition(): Int =
             mediaPlayer.currentPosition
 
-    }
-
-    override fun onUnbind(intent: Intent?): Boolean {
-        Log.i("unbind","unbind")
-        return super.onUnbind(intent)
     }
 
 }
