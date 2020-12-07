@@ -9,6 +9,7 @@ import android.graphics.BitmapFactory
 import android.media.MediaPlayer
 import android.os.Binder
 import android.os.Build
+import android.os.Bundle
 import android.os.IBinder
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaSessionCompat
@@ -45,7 +46,7 @@ class MusicService : Service() {
                     or PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS
         )
 
-    lateinit var mediaSession: MediaSessionCompat
+    var mediaSession: MediaSessionCompat? = null
 
     @SuppressLint("WrongConstant")
     override fun onCreate() {
@@ -64,18 +65,17 @@ class MusicService : Service() {
         }
 
         mediaSession = MediaSessionCompat(this, "MusicService")
-        mediaSession.setFlags(MediaSessionCompat.FLAG_HANDLES_MEDIA_BUTTONS or MediaSessionCompat.FLAG_HANDLES_TRANSPORT_CONTROLS)
-        mediaSession.setCallback(mediaSessionCallback)
-
+        mediaSession!!.setFlags(MediaSessionCompat.FLAG_HANDLES_MEDIA_BUTTONS or MediaSessionCompat.FLAG_HANDLES_TRANSPORT_CONTROLS)
+        mediaSession!!.setCallback(mediaSessionCallback)
         val appContext = applicationContext
 
         val activityIntent = Intent(appContext, MainActivity::class.java)
-        mediaSession.setSessionActivity(
+        mediaSession?.setSessionActivity(
             PendingIntent.getActivity(
                 appContext,
                 0,
                 activityIntent,
-                Intent.FLAG_ACTIVITY_SINGLE_TOP
+                0
             )
         )
 
@@ -83,7 +83,7 @@ class MusicService : Service() {
             Intent.ACTION_MEDIA_BUTTON, null, appContext,
             MediaButtonReceiver::class.java
         )
-        mediaSession.setMediaButtonReceiver(
+        mediaSession!!.setMediaButtonReceiver(
             PendingIntent.getBroadcast(
                 appContext,
                 0,
@@ -97,11 +97,12 @@ class MusicService : Service() {
     override fun onDestroy() {
         super.onDestroy()
 
-        mediaSession.release()
+        mediaSession?.release()
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         MediaButtonReceiver.handleIntent(mediaSession, intent)
+
         return super.onStartCommand(intent, flags, startId)
     }
 
@@ -113,9 +114,9 @@ class MusicService : Service() {
             startService(Intent(applicationContext, MusicService::class.java))
             val music = MusicRepository.getCurrentTrack()
 
-            mediaSession.isActive = true
+            mediaSession?.isActive = true
 
-            mediaSession.setPlaybackState(
+            mediaSession?.setPlaybackState(
                 stateBuilder.setState(
                     PlaybackStateCompat.STATE_PLAYING,
                     PlaybackStateCompat.PLAYBACK_POSITION_UNKNOWN,
@@ -137,7 +138,7 @@ class MusicService : Service() {
         override fun onPause() {
             mediaPlayer.pause()
 
-            mediaSession.setPlaybackState(
+            mediaSession?.setPlaybackState(
                 stateBuilder.setState(
                     PlaybackStateCompat.STATE_PAUSED,
                     PlaybackStateCompat.PLAYBACK_POSITION_UNKNOWN, 1F
@@ -152,9 +153,9 @@ class MusicService : Service() {
         override fun onStop() {
             mediaPlayer.stop()
 
-            mediaSession.isActive = false
+            mediaSession?.isActive = false
 
-            mediaSession.setPlaybackState(
+            mediaSession?.setPlaybackState(
                 stateBuilder.setState(
                     PlaybackStateCompat.STATE_STOPPED,
                     PlaybackStateCompat.PLAYBACK_POSITION_UNKNOWN, 1F
@@ -170,10 +171,16 @@ class MusicService : Service() {
             mediaPlayer.seekTo(pos.toInt())
         }
 
+        override fun onCustomAction(action: String?, extras: Bundle?) {
+            if (action?.equals("get_music_info") == true) {
+                updateMetadataFromMusic(musicRepository.getCurrentTrack())
+            }
+        }
+
         override fun onSkipToNext() {
             val nextMusic = musicRepository.getNext()
 
-            mediaSession.setPlaybackState(
+            mediaSession?.setPlaybackState(
                 stateBuilder.setState(
                     PlaybackStateCompat.STATE_SKIPPING_TO_NEXT,
                     PlaybackStateCompat.PLAYBACK_POSITION_UNKNOWN, 1F
@@ -197,7 +204,7 @@ class MusicService : Service() {
             else {
                 val prevMusic = musicRepository.getPrev()
 
-                mediaSession.setPlaybackState(
+                mediaSession?.setPlaybackState(
                     stateBuilder.setState(
                         PlaybackStateCompat.STATE_SKIPPING_TO_PREVIOUS,
                         PlaybackStateCompat.PLAYBACK_POSITION_UNKNOWN, 1F
@@ -242,8 +249,9 @@ class MusicService : Service() {
                     MediaMetadataCompat.METADATA_KEY_DURATION,
                     mediaPlayer.duration.toLong()
                 )
-            mediaSession.setMetadata(mediaDataBuilder.build())
+            mediaSession?.setMetadata(mediaDataBuilder.build())
         }
+
 
     }
 
@@ -259,6 +267,7 @@ class MusicService : Service() {
             PlaybackStateCompat.STATE_PAUSED -> {
                 NotificationManagerCompat.from(this)
                     .notify(NOTIFICATION_ID, getNotification(playbackState)!!)
+                stopForeground(false)
             }
             PlaybackStateCompat.STATE_SKIPPING_TO_NEXT -> {
                 NotificationManagerCompat.from(this)
@@ -276,7 +285,7 @@ class MusicService : Service() {
 
     private fun getNotification(playbackState: Int): Notification? {
         val builder =
-            from(this, mediaSession)
+            mediaSession?.let { from(this, it) }
         builder!!.addAction(
             NotificationCompat.Action(
                 R.drawable.ic_media_previous,
@@ -330,7 +339,7 @@ class MusicService : Service() {
                         PlaybackStateCompat.ACTION_STOP
                     )
                 )
-                .setMediaSession(mediaSession.sessionToken)
+                .setMediaSession(mediaSession?.sessionToken)
         )
         builder.setSmallIcon(R.mipmap.sym_def_app_icon)
         builder.color = ContextCompat.getColor(
@@ -346,12 +355,16 @@ class MusicService : Service() {
 
     open inner class MusicServiceBinder : Binder() {
 
-        fun getMediaSessionToken(): MediaSessionCompat.Token =
-            mediaSession.sessionToken
+        fun getMediaSessionToken(): MediaSessionCompat.Token = mediaSession?.sessionToken!!
 
         fun getCurrentPosition(): Int =
             mediaPlayer.currentPosition
 
+    }
+
+    override fun onUnbind(intent: Intent?): Boolean {
+        Log.i("unbind","unbind")
+        return super.onUnbind(intent)
     }
 
 }

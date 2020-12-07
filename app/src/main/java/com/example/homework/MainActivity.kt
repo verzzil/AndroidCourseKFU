@@ -1,11 +1,11 @@
 package com.example.homework
 
+import android.app.ActivityManager
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.ServiceConnection
 import android.media.MediaPlayer
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.IBinder
 import android.os.RemoteException
@@ -14,11 +14,12 @@ import android.support.v4.media.session.MediaControllerCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import android.util.Log
 import android.widget.SeekBar
+import androidx.appcompat.app.AppCompatActivity
 import com.example.homework.adapters.MusicAdapter
 import com.example.homework.data.MusicRepository
-import com.example.homework.models.Music
 import kotlinx.android.synthetic.main.activity_main.*
 import java.util.*
+
 
 class MainActivity : AppCompatActivity() {
 
@@ -63,6 +64,9 @@ class MainActivity : AppCompatActivity() {
                 override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
                     musicServiceBinder = service as MusicService.MusicServiceBinder
 
+
+                    musicServiceBinder?.isBinderAlive
+
                     try {
                         mediaController = musicServiceBinder?.getMediaSessionToken()?.let {
                             MediaControllerCompat(
@@ -102,6 +106,10 @@ class MainActivity : AppCompatActivity() {
                                 override fun onMetadataChanged(metadata: MediaMetadataCompat?) {
                                     if (metadata == null)
                                         return
+
+                                    music_title.text = metadata.bundle.getString(MediaMetadataCompat.METADATA_KEY_TITLE)
+                                    music_author.text = metadata.bundle.getString(MediaMetadataCompat.METADATA_KEY_ALBUM)
+
                                     seekBar?.max =
                                         metadata.bundle.getLong(MediaMetadataCompat.METADATA_KEY_DURATION)
                                             .toInt()
@@ -124,6 +132,9 @@ class MainActivity : AppCompatActivity() {
                                                 mediaController?.transportControls?.seekTo(progress.toLong())
                                             if ((seekBar?.max?.minus(1000))!! <= progress)
                                                 mediaController?.transportControls?.skipToNext()
+
+                                            Log.i("mediaController", "${mediaController}")
+
                                         }
 
                                         override fun onStartTrackingTouch(seekBar: SeekBar?) {
@@ -140,6 +151,7 @@ class MainActivity : AppCompatActivity() {
                     } catch (e: RemoteException) {
                         mediaController = null
                     }
+
                 }
 
                 override fun onServiceDisconnected(name: ComponentName?) {
@@ -167,6 +179,19 @@ class MainActivity : AppCompatActivity() {
             mediaController?.transportControls?.skipToPrevious()
         }
 
+
+
+    }
+
+    private fun isMyServiceRunning(serviceClass: Class<*>): Boolean {
+        val manager =
+            getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
+        for (service in manager.getRunningServices(Int.MAX_VALUE)) {
+            if (serviceClass.name == service.service.className) {
+                return true
+            }
+        }
+        return false
     }
 
 }
