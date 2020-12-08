@@ -13,6 +13,7 @@ import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaControllerCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import android.util.Log
+import android.view.View
 import android.widget.SeekBar
 import androidx.appcompat.app.AppCompatActivity
 import com.example.homework.adapters.MusicAdapter
@@ -39,6 +40,8 @@ class MainActivity : AppCompatActivity() {
         musicAdapter = MusicAdapter(
             MusicRepository.music
         ) {
+            if (music_controller.visibility == View.GONE)
+                music_controller.visibility = View.VISIBLE
             if (musicRepository.currentIndex == it.id) {
                 if (play_pause.tag == R.drawable.ic_play) {
                     mediaController?.transportControls?.play()
@@ -116,6 +119,13 @@ class MainActivity : AppCompatActivity() {
                                     music_author.text =
                                         metadata.bundle.getString(MediaMetadataCompat.METADATA_KEY_ALBUM)
 
+                                    if(metadata.bundle.getLong("isPlaying") != 0L) {
+                                        if (music_controller.visibility == View.GONE)
+                                            music_controller.visibility = View.VISIBLE
+                                        play_pause.setImageResource(R.drawable.ic_baseline_pause_24)
+                                        play_pause.tag = R.drawable.ic_baseline_pause_24
+                                    }
+
                                     seekBar?.max =
                                         metadata.bundle.getLong(MediaMetadataCompat.METADATA_KEY_DURATION)
                                             .toInt()
@@ -136,9 +146,6 @@ class MainActivity : AppCompatActivity() {
                                         ) {
                                             if (fromUser)
                                                 mediaController?.transportControls?.seekTo(progress.toLong())
-                                            if ((seekBar?.max?.minus(1000))!! <= progress)
-                                                mediaController?.transportControls?.skipToNext()
-
                                         }
 
                                         override fun onStartTrackingTouch(seekBar: SeekBar?) {

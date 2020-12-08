@@ -22,6 +22,7 @@ import androidx.media.session.MediaButtonReceiver
 import com.example.homework.MediaStyleHelper.from
 import com.example.homework.data.MusicRepository
 import com.example.homework.models.Music
+import java.util.*
 
 
 class MusicService : Service() {
@@ -132,7 +133,16 @@ class MusicService : Service() {
 
             refreshNotificationAndForegroundStatus(currentState)
 
+            Timer().scheduleAtFixedRate(object : TimerTask() {
+                override fun run() {
+                    mediaPlayer.setOnCompletionListener {
+                        onSkipToNext()
+                    }
+                }
+            }, 0, 1000)
         }
+
+
 
         override fun onPause() {
             mediaPlayer.pause()
@@ -161,7 +171,7 @@ class MusicService : Service() {
                 ).build()
             )
 
-            currentState = PlaybackStateCompat.STATE_STOPPED;
+            currentState = PlaybackStateCompat.STATE_STOPPED
 
             refreshNotificationAndForegroundStatus(currentState);
         }
@@ -172,7 +182,10 @@ class MusicService : Service() {
 
         override fun onCustomAction(action: String?, extras: Bundle?) {
             if (action?.equals("get_music_info") == true) {
-                updateMetadataFromMusic(musicRepository.getCurrentTrack())
+                if (!mediaPlayer.isPlaying)
+                    updateMetadataFromMusic(musicRepository.getCurrentTrack(), 0L)
+                else
+                    updateMetadataFromMusic(musicRepository.getCurrentTrack())
             }
         }
 
@@ -193,7 +206,7 @@ class MusicService : Service() {
 
             currentState = PlaybackStateCompat.STATE_SKIPPING_TO_NEXT
 
-            refreshNotificationAndForegroundStatus(currentState);
+            refreshNotificationAndForegroundStatus(currentState)
 
         }
 
@@ -217,7 +230,7 @@ class MusicService : Service() {
 
                 currentState = PlaybackStateCompat.STATE_SKIPPING_TO_PREVIOUS
 
-                refreshNotificationAndForegroundStatus(currentState);
+                refreshNotificationAndForegroundStatus(currentState)
             }
         }
 
@@ -230,7 +243,7 @@ class MusicService : Service() {
             }
         }
 
-        private fun updateMetadataFromMusic(music: Music) {
+        private fun updateMetadataFromMusic(music: Music, isPlaying: Long = 1L) {
             mediaDataBuilder
                 .putBitmap(
                     MediaMetadataCompat.METADATA_KEY_ART,
@@ -248,8 +261,10 @@ class MusicService : Service() {
                     MediaMetadataCompat.METADATA_KEY_DURATION,
                     mediaPlayer.duration.toLong()
                 )
+                .putLong("isPlaying", isPlaying)
             mediaSession?.setMetadata(mediaDataBuilder.build())
         }
+
 
 
     }
