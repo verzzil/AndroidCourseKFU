@@ -12,7 +12,20 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity
+            android:name=".MainActivity2"
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <service
+            android:name=".service.MyMusicService"
+            android:enabled="true"
+            android:exported="true" />
         <service
             android:name=".MusicService"
             android:exported="true">
@@ -30,14 +43,7 @@
         <activity
             android:name=".MainActivity"
             android:launchMode="singleInstance"
-            android:screenOrientation="portrait">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-
+            android:screenOrientation="portrait"></activity>
     </application>
 
 </manifest>

@@ -1,6 +1,5 @@
 package com.example.homework.hoders
 
-import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
@@ -13,6 +12,7 @@ class MusicHolder(
     private val click: (music: Music) -> Unit
 ) : RecyclerView.ViewHolder(containerView) {
     private val albumImage: ImageView = itemView.findViewById(R.id.album_avatar)
+    private val playing: ImageView = itemView.findViewById(R.id.playing)
     private val trackName: TextView = itemView.findViewById(R.id.track_name)
     private val trackAuthor: TextView = itemView.findViewById(R.id.track_author)
     fun bind(music: Music) {
@@ -25,4 +25,5 @@ class MusicHolder(
         }
 
     }
+
 }

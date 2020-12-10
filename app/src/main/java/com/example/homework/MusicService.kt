@@ -102,7 +102,7 @@ class MusicService : Service() {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        MediaButtonReceiver.handleIntent(mediaSession, intent)
+//        MediaButtonReceiver.handleIntent(mediaSession, intent)
 
         return super.onStartCommand(intent, flags, startId)
     }
