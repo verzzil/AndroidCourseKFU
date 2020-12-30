@@ -22,7 +22,7 @@ object AuthorMusicRepository {
             arrayListOf(
                 Music(1,0,"Снова я напиваюсь", R.raw.slava_buhayu),
                 Music(1,1,"По глазам", R.raw.slava_glaza),
-                Music(1,2,"Быстро", R.raw.slava_bystro)
+                Music(1,2,"Вот так могу", R.raw.slava_vot)
             )
         )
     )
@@ -33,6 +33,12 @@ object AuthorMusicRepository {
 
     fun getCurrentMusic(): Music =
         authors[currentAuthor].musics[currentMusic]
+
+    fun getCurrentAuthorName() : String =
+        authors[currentAuthor].authorName
+
+    fun getCurrentMusicTitle() : String =
+        authors[currentAuthor].musics[currentMusic].musicName
 
     fun getNext(): Music {
         if (currentMusic == currentMaxAlbumSize)

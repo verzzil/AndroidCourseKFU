@@ -6,6 +6,7 @@ import android.media.MediaPlayer
 import android.os.IBinder
 import com.example.homework.aidl.IMusicAidlInterface
 import com.example.homework.repository.AuthorMusicRepository
+import java.util.*
 
 class MusicService : Service() {
     private lateinit var mediaPlayer : MediaPlayer
@@ -28,6 +29,10 @@ class MusicService : Service() {
             mediaPlayer.start()
         }
 
+        override fun pause() {
+            mediaPlayer.pause()
+        }
+
         override fun skipToNext() {
             val nextTrack = authorMusicRepository.getNext()
             prepareToPlay(currentAuthor, nextTrack.id)
@@ -39,6 +44,9 @@ class MusicService : Service() {
             prepareToPlay(currentAuthor, nextTrack.id)
             mediaPlayer.start()
         }
+
+        override fun isPlaying(): Boolean =
+            mediaPlayer.isPlaying
 
         override fun seekTo(postition: Int) =
             mediaPlayer.seekTo(postition)
@@ -56,6 +64,7 @@ class MusicService : Service() {
 
                 authorMusicRepository.currentAuthor = authorId
                 authorMusicRepository.currentMusic = musicId
+                authorMusicRepository.currentMaxAlbumSize = authorMusicRepository.authors[authorId].musics.size - 1
 
                 mediaPlayer.stop()
                 mediaPlayer.release()
@@ -63,6 +72,8 @@ class MusicService : Service() {
             } else {
                 if(musicId != currentMusic) {
                     currentMusic = musicId
+
+                    authorMusicRepository.currentMusic = musicId
 
                     mediaPlayer.stop()
                     mediaPlayer.release()

@@ -2,6 +2,7 @@ package com.example.homework.adapter
 
 import android.content.Context
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.homework.R
@@ -12,7 +13,8 @@ import com.example.homework.service.MusicService
 
 class AuthorAdapter(
     private val musicService: IMusicAidlInterface,
-    private val click : () -> Unit
+    private val context: Context,
+    private val click : (itemView: View) -> Unit
 ) : RecyclerView.Adapter<AuthorHolder>() {
     private val authorAndMusics = AuthorMusicRepository.authors
 
@@ -21,6 +23,7 @@ class AuthorAdapter(
             LayoutInflater.from(parent.context)
                 .inflate(R.layout.item_author, parent, false),
             musicService,
+            context,
             click
         )
 
