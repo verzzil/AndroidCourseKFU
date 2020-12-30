@@ -6,10 +6,10 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
-import android.widget.Toolbar
 import com.example.homework.adapter.TabAdapter
 import com.example.homework.consts.Consts
 import com.example.homework.dao.TabDao
+import com.example.homework.models.Tab
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -32,6 +32,9 @@ class MainActivity : AppCompatActivity(), CoroutineScope {
         db = DataBase(this)
         dbDao = db.getTabDAO()
 
+//        launch {
+//            dbDao.save(Tab("asdf","asdf",123L,0.0,0.0))
+//        }
 
         adapter = TabAdapter(
             {

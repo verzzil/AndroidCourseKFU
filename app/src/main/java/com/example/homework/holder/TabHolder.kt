@@ -9,6 +9,7 @@ import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.example.homework.R
 import com.example.homework.models.Tab
+import java.text.SimpleDateFormat
 
 class TabHolder(
     containerView: View,
@@ -18,12 +19,14 @@ class TabHolder(
 ) : RecyclerView.ViewHolder(containerView) {
     var id = itemView.findViewById<TextView>(R.id.id)
     var title = itemView.findViewById<TextView>(R.id.title)
+    var date = itemView.findViewById<TextView>(R.id.date)
     var remove = itemView.findViewById<ImageView>(R.id.remove)
 
     @SuppressLint("ClickableViewAccessibility")
     fun bind(tab: Tab) {
         id.text = tab.id.toString()
         title.text = tab.title
+        date.text = SimpleDateFormat("dd.MM.Y").format(tab.date)
 
         remove.setOnClickListener {
             removeClick(tab.id)
