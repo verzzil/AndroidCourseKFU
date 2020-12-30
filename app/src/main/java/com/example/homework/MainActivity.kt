@@ -1,17 +1,102 @@
 package com.example.homework
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import androidx.recyclerview.widget.RecyclerView
+import android.view.Menu
+import android.view.MenuItem
+import android.widget.Toast
+import android.widget.Toolbar
+import com.example.homework.adapter.TabAdapter
+import com.example.homework.consts.Consts
+import com.example.homework.dao.TabDao
+import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
+import kotlin.coroutines.CoroutineContext
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), CoroutineScope {
 
-    lateinit var adapter: RecyclerView
+    override val coroutineContext: CoroutineContext = SupervisorJob() + Dispatchers.Main
+
+    private lateinit var adapter: TabAdapter
+    private lateinit var db: DataBase
+    private lateinit var dbDao: TabDao
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        db = DataBase(this)
+        dbDao = db.getTabDAO()
+
+
+        adapter = TabAdapter(
+            {
+                val intent = Intent(this, AddEditActivity::class.java)
+                intent.apply {
+                    putExtra("tab", it)
+                    putExtra("mode", Consts.OPEN_WITH_EDIT)
+                }
+                startActivityForResult(intent, 1)
+            },
+            {
+                launch {
+                    dbDao.deleteTabById(it)
+
+                    adapter.submitList(dbDao.getTabs())
+                }
+            },
+            {
+                Toast.makeText(this, "$it", Toast.LENGTH_LONG).show()
+            }
+        )
+
+        launch {
+            adapter.submitList(dbDao.getTabs())
+            rv_list.adapter = adapter
+        }
+
+
+        open_add.setOnClickListener {
+            val intent = Intent(this, AddEditActivity::class.java)
+            intent.apply {
+                putExtra("mode", Consts.OPEN_WITH_ADD)
+            }
+            startActivityForResult(intent, 1)
+        }
 
     }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (data == null) return
+        if (requestCode == 1) {
+            launch {
+                adapter.submitList(dbDao.getTabs())
+            }
+        }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu_toolbar, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when(item.title) {
+            "delete" -> {
+                launch {
+                    dbDao.deleteAll()
+
+                    adapter.submitList(ArrayList())
+                }
+            }
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+
 }
