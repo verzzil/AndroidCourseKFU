@@ -61,7 +61,6 @@ class AddEditActivity : AppCompatActivity(), CoroutineScope {
                             latitude ?: 0.0
                         )
 
-
                         dbDao.save(newTab)
 
                         val intent = Intent()

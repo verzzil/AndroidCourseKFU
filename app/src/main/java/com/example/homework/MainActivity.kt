@@ -11,10 +11,7 @@ import com.example.homework.consts.Consts
 import com.example.homework.dao.TabDao
 import com.example.homework.models.Tab
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
 
 class MainActivity : AppCompatActivity(), CoroutineScope {
@@ -71,6 +68,11 @@ class MainActivity : AppCompatActivity(), CoroutineScope {
             startActivityForResult(intent, 1)
         }
 
+    }
+
+    override fun onDestroy() {
+        coroutineContext.cancel()
+        super.onDestroy()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
