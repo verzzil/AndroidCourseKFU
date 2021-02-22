@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/day_gradient"
+    tools:context=".FullWeatherInfoActivity">
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/left_line"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.05" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/right_line"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.95" />
+
+
+    <TextView
+        android:id="@+id/city_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:text="City"
+        android:textColor="#fff"
+        android:textSize="40sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.mikepenz.iconics.view.IconicsImageView
+        android:id="@+id/weather_icon"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:layout_marginTop="32dp"
+        app:iiv_color="#fff"
+        app:iiv_icon="wic-day-cloudy"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/city_weather_desc" />
+
+    <TextView
+        android:id="@+id/city_temp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:text="-26°"
+        android:textColor="#fff"
+        android:textSize="40sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="@id/right_line"
+        app:layout_constraintStart_toStartOf="@id/left_line"
+        app:layout_constraintTop_toBottomOf="@id/weather_icon" />
+
+    <TextView
+        android:id="@+id/week_day"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:textColor="#fff"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/city_temp" />
+
+    <TextView
+        android:id="@+id/city_weather_desc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Ясно"
+        android:textColor="#fff"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="@id/right_line"
+        app:layout_constraintStart_toStartOf="@id/left_line"
+        app:layout_constraintTop_toBottomOf="@id/city_name" />
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/barrier"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="end"
+        app:constraint_referenced_ids="wind_t, barometer_t, sunset_t, sunrise_t"
+        app:layout_constraintStart_toStartOf="@id/left_line"
+        app:layout_constraintTop_toBottomOf="@id/week_day" />
+
+    <com.mikepenz.iconics.view.IconicsImageView
+        android:id="@+id/wind_icon"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_marginTop="12dp"
+        app:iiv_icon="wic-direction-down"
+        app:layout_constraintStart_toStartOf="@id/left_line"
+        app:layout_constraintTop_toBottomOf="@id/week_day" />
+
+    <TextView
+        android:id="@+id/wind_t"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Направление ветра:"
+        android:textColor="#fff"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toBottomOf="@id/wind_icon"
+        app:layout_constraintStart_toEndOf="@id/wind_icon"
+        app:layout_constraintTop_toTopOf="@id/wind_icon"
+        android:layout_marginStart="8dp"/>
+
+    <TextView
+        android:id="@+id/wind"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:text="asdf"
+        android:textColor="#fff"
+        android:textSize="12sp"
+        app:layout_constraintStart_toEndOf="@id/barrier"
+        app:layout_constraintTop_toTopOf="@id/wind_t" />
+
+    <com.mikepenz.iconics.view.IconicsImageView
+        android:id="@+id/barometer_icon"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_marginTop="12dp"
+        app:iiv_color="#fff"
+        app:iiv_icon="wic-barometer"
+        app:layout_constraintStart_toStartOf="@id/left_line"
+        app:layout_constraintTop_toBottomOf="@id/wind_icon" />
+
+    <TextView
+        android:id="@+id/barometer_t"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Давление:"
+        android:textColor="#fff"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toBottomOf="@id/barometer_icon"
+        app:layout_constraintStart_toStartOf="@id/wind_t"
+        app:layout_constraintTop_toTopOf="@id/barometer_icon" />
+
+    <TextView
+        android:id="@+id/barometer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:text="asdf"
+        android:textColor="#fff"
+        android:textSize="12sp"
+        app:layout_constraintStart_toEndOf="@id/barrier"
+        app:layout_constraintTop_toTopOf="@id/barometer_t" />
+
+    <com.mikepenz.iconics.view.IconicsImageView
+        android:id="@+id/sunrise_icon"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_marginTop="12dp"
+        app:iiv_color="#fff"
+        app:iiv_icon="wic-sunrise"
+        app:layout_constraintStart_toStartOf="@id/left_line"
+        app:layout_constraintTop_toBottomOf="@id/barometer_icon" />
+
+    <TextView
+        android:id="@+id/sunrise_t"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Восход солнца:"
+        android:textColor="#fff"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toBottomOf="@id/sunrise_icon"
+        app:layout_constraintStart_toStartOf="@id/wind_t"
+        app:layout_constraintTop_toTopOf="@id/sunrise_icon" />
+
+    <TextView
+        android:id="@+id/sunrise"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:text="asdf"
+        android:textColor="#fff"
+        android:textSize="12sp"
+        app:layout_constraintStart_toEndOf="@id/barrier"
+        app:layout_constraintTop_toTopOf="@id/sunrise_t" />
+
+    <com.mikepenz.iconics.view.IconicsImageView
+        android:id="@+id/sunset_icon"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_marginTop="12dp"
+        app:iiv_color="#fff"
+        app:iiv_icon="wic-sunset"
+        app:layout_constraintStart_toStartOf="@id/left_line"
+        app:layout_constraintTop_toBottomOf="@id/sunrise_icon" />
+
+    <TextView
+        android:id="@+id/sunset_t"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Заход солнца:"
+        android:textColor="#fff"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toBottomOf="@id/sunset_icon"
+        app:layout_constraintStart_toStartOf="@id/wind_t"
+        app:layout_constraintTop_toTopOf="@id/sunset_icon" />
+
+    <TextView
+        android:id="@+id/sunset"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:text="asdf"
+        android:textColor="#fff"
+        android:textSize="12sp"
+        app:layout_constraintStart_toEndOf="@id/barrier"
+        app:layout_constraintTop_toTopOf="@id/sunset_t" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
