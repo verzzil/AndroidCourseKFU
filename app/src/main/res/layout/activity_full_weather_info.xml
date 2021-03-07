@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/day_gradient"
-    tools:context=".FullWeatherInfoActivity">
+    tools:context=".presenation.FullWeatherInfoActivity">
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/left_line"

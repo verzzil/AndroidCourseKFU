@@ -1,4 +1,4 @@
-package com.example.homework
+package com.example.homework.presenation
 
 import android.annotation.SuppressLint
 import android.graphics.Color
@@ -8,8 +8,15 @@ import android.icu.util.TimeZone
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
-import com.example.homework.api.ApiFactory
-import com.example.homework.models.City
+import com.example.homework.R
+import com.example.homework.data.api.ApiFactory
+import com.example.homework.data.db.AppDatabase
+import com.example.homework.data.db.dao.CityDao
+import com.example.homework.data.models.CityData
+import com.example.homework.domain.GetCitiesUseCase
+import com.example.homework.domain.GetDestinationUseCase
+import com.example.homework.presenation.models.CityPresenter
+import com.google.android.gms.location.FusedLocationProviderClient
 import com.mikepenz.iconics.IconicsDrawable
 import com.mikepenz.iconics.typeface.library.weathericons.WeatherIcons
 import com.mikepenz.iconics.utils.toIconicsColor
@@ -19,7 +26,10 @@ import java.util.*
 
 class FullWeatherInfoActivity : AppCompatActivity() {
 
-    val weatherApi = ApiFactory.weatherApi
+    private lateinit var getCitiesUseCase: GetCitiesUseCase
+    private lateinit var getDestinationUseCase: GetDestinationUseCase
+    private lateinit var db: AppDatabase
+    private lateinit var cityDao: CityDao
 
     var cityId: Int = -1
 
@@ -33,25 +43,33 @@ class FullWeatherInfoActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_full_weather_info)
 
+        db = AppDatabase(applicationContext)
+        cityDao = db.getCityDao()
+        getCitiesUseCase = GetCitiesUseCase(cityDao)
+        getDestinationUseCase = GetDestinationUseCase(
+            fusedLocationProviderClient = FusedLocationProviderClient(applicationContext)
+        )
+
         cityId = intent.getIntExtra("city_id", -1)
 
         chooseBackground()
 
         lifecycleScope.launch {
-            val currentCity = weatherApi.getWeather(cityId)
+            val currentCity = getCitiesUseCase.getCityById(cityId)
 
             determineWeatherIcon(currentCity)
             determineWindDirectionIcon(currentCity)
 
-            city_name.text = currentCity.name
-            city_temp.text = "${currentCity.main?.temp?.toInt()}°"
-            city_weather_desc.text = currentCity.weather[0].description
-            week_day.text = weekDay
-            sunrise.text = getDate(currentCity.sys.sunrise)
-            sunset.text = getDate(currentCity.sys.sunset)
-            wind.text = currentCity.getRussianWindDirection()
-            barometer.text = "${currentCity.main?.pressure ?: 0}"
-
+            if (currentCity != null) {
+                city_name.text = currentCity.name
+                city_temp.text = "${currentCity.temp}°"
+                city_weather_desc.text = currentCity.tempDesc
+                week_day.text = weekDay
+                sunrise.text = currentCity.sunrise
+                sunset.text = currentCity.sunset
+                wind.text = currentCity.windDirection
+                barometer.text = "${currentCity.pressure}"
+            }
         }
     }
 
@@ -68,9 +86,9 @@ class FullWeatherInfoActivity : AppCompatActivity() {
         }
     }
 
-    private fun determineWindDirectionIcon(currentCity: City) {
+    private fun determineWindDirectionIcon(currentCity: CityPresenter?) {
         wind_icon.let {
-            when (currentCity.getRussianWindDirection()) {
+            when (currentCity?.windDirection) {
                 "север" -> it.icon = IconicsDrawable(this).icon(WeatherIcons.Icon.wic_direction_up)
                 "северо-восток" -> it.icon =
                     IconicsDrawable(this).icon(WeatherIcons.Icon.wic_direction_up_right)
@@ -90,9 +108,9 @@ class FullWeatherInfoActivity : AppCompatActivity() {
         }
     }
 
-    private fun determineWeatherIcon(currentCity: City) {
+    private fun determineWeatherIcon(currentCity: CityPresenter?) {
         weather_icon.let {
-            when (currentCity.weather[0].description) {
+            when (currentCity?.tempDesc) {
                 "небольшой снег с дождём" -> it.icon = IconicsDrawable(this)
                     .icon(WeatherIcons.Icon.wic_rain_mix)
                 "небольшой снег" -> it.icon = IconicsDrawable(this)
@@ -113,11 +131,5 @@ class FullWeatherInfoActivity : AppCompatActivity() {
         }
     }
 
-    @SuppressLint("SimpleDateFormat")
-    private fun getDate(time: Long): String? {
-        val date = Date(time * 1000L)
-        val sdf = SimpleDateFormat("HH:mm")
-        sdf.timeZone = TimeZone.getTimeZone("GMT+3")
-        return sdf.format(date)
-    }
+
 }

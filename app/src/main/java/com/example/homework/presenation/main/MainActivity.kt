@@ -1,13 +1,9 @@
-package com.example.homework
+package com.example.homework.presenation.main
 
 import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.icu.text.SimpleDateFormat
-import android.icu.util.Calendar
-import android.icu.util.GregorianCalendar
-import android.icu.util.TimeZone
-import android.icu.util.ULocale
+import android.location.Location
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -17,35 +13,42 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.lifecycleScope
-import com.example.homework.adapters.CityAdapter
-import com.example.homework.api.ApiFactory
-import com.example.homework.models.City
-import com.example.homework.responses.CityWeatherResponse
+import com.example.homework.R
+import com.example.homework.data.adapters.CityAdapter
+import com.example.homework.data.db.AppDatabase
+import com.example.homework.data.db.dao.CityDao
+import com.example.homework.data.models.CityData
+import com.example.homework.domain.GetCitiesUseCase
+import com.example.homework.domain.GetDestinationUseCase
+import com.example.homework.domain.models.CityDomain
+import com.example.homework.presenation.FullWeatherInfoActivity
+import com.example.homework.presenation.models.CityPresenter
 import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.location.LocationServices
-import com.mikepenz.iconics.Iconics
-import com.mikepenz.iconics.IconicsDrawable
-import com.mikepenz.iconics.typeface.library.fontawesome.FontAwesome
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.launch
-import retrofit2.HttpException
 import java.lang.Exception
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var providerClient: FusedLocationProviderClient
     private var rvAdapter: CityAdapter? = null
-    private val weatherApi = ApiFactory.weatherApi
 
     private val locationRequestCode = 100
-    private var wayLatitude = 0.0
-    private var wayLongitude = 0.0
+
+    private lateinit var getCitiesUseCase: GetCitiesUseCase
+    private lateinit var getDestinationUseCase: GetDestinationUseCase
+    private lateinit var db: AppDatabase
+    private lateinit var cityDao: CityDao
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        providerClient = LocationServices.getFusedLocationProviderClient(this)
+        db = AppDatabase(applicationContext)
+        cityDao = db.getCityDao()
+        getCitiesUseCase = GetCitiesUseCase(cityDao)
+        getDestinationUseCase = GetDestinationUseCase(
+            fusedLocationProviderClient = FusedLocationProviderClient(applicationContext)
+        )
 
         if (ActivityCompat.checkSelfPermission(
                 this,
@@ -75,9 +78,10 @@ class MainActivity : AppCompatActivity() {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 lifecycleScope.launch {
                     try {
-                        val currentCity = weatherApi.getWeather(search_view.query.toString())
+                        val currentCity =
+                            getCitiesUseCase.getCityByName(search_view.query.toString())
 
-                        startFullInfoActivity(currentCity)
+                        if (currentCity != null) startFullInfoActivity(currentCity)
                     } catch (e: Exception) {
                         Toast.makeText(
                             this@MainActivity,
@@ -116,46 +120,33 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun startFullInfoActivity(currentCity: CityWeatherResponse) {
+    private fun startFullInfoActivity(currentCity: CityPresenter?) {
         startActivity(
             Intent(
                 this@MainActivity,
                 FullWeatherInfoActivity::class.java
             ).apply {
-                putExtra("city_id", currentCity.id)
-            })
-    }
-
-    private fun startFullInfoActivity(currentCity: City) {
-        startActivity(
-            Intent(
-                this@MainActivity,
-                FullWeatherInfoActivity::class.java
-            ).apply {
-                putExtra("city_id", currentCity.id)
-            })
+                putExtra("city_id", currentCity?.id)
+            }
+        )
     }
 
     private fun initializeMainLogic() {
-        providerClient.lastLocation.addOnSuccessListener {
-            if (it != null) {
-                wayLatitude = it.latitude
-                wayLongitude = it.longitude
+        lifecycleScope.launch {
+            val location: Location? = try {
+                getDestinationUseCase.getLocation()
+            } catch (exception: Exception) {
+                null
+            }
+            val nearCities = getCitiesUseCase.getNearCities(location)
+
+            Log.i("nearcitites", "${nearCities}")
+
+            rvAdapter = CityAdapter(nearCities as ArrayList<CityPresenter>) {
+                startFullInfoActivity(it)
             }
 
-            lifecycleScope.launch {
-                val nearCitiesResponse =
-                    weatherApi.getNearCitiesInfo(wayLatitude.toInt(), wayLongitude.toInt())
-                val nearCities = nearCitiesResponse.list
-
-                rvAdapter = CityAdapter(nearCities as ArrayList<City>) {
-                    startFullInfoActivity(it)
-                }
-
-                rv_cities.adapter = rvAdapter
-
-            }
-
+            rv_cities.adapter = rvAdapter
         }
     }
 
