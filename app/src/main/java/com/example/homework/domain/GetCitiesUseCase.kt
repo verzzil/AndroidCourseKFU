@@ -8,10 +8,8 @@ import com.example.homework.domain.models.CityDomain
 import com.example.homework.presenation.models.CityPresenter
 
 class GetCitiesUseCase(
-    cityDao: CityDao
+    val cityRepository: CityRepository
 ) {
-
-    private val cityRepository: CityRepositoryImpl = CityRepositoryImpl(cityDao)
 
     suspend fun getCityByName(name: String): CityPresenter? =
         cityRepository.getByCityName(name)?.toCityPresenter()

@@ -3,6 +3,7 @@ package com.example.homework.data.repositories
 import android.location.Location
 import android.util.Log
 import com.example.homework.data.api.ApiFactory
+import com.example.homework.data.api.WeatherApi
 import com.example.homework.data.db.dao.CityDao
 import com.example.homework.data.db.models.CityDb
 import com.example.homework.domain.CityRepository
@@ -12,9 +13,9 @@ import kotlinx.coroutines.*
 import java.lang.Exception
 
 class CityRepositoryImpl(
-    private val cityDao: CityDao
+    private val cityDao: CityDao,
+    private val weatherApi: WeatherApi
 ) : CoroutineScope by CoroutineScope(Dispatchers.Main), CityRepository {
-    private val weatherApi = ApiFactory.weatherApi
 
     override suspend fun getByCityName(name: String): CityDomain? {
         return try {

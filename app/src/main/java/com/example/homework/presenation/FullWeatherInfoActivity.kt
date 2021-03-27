@@ -13,6 +13,8 @@ import com.example.homework.data.api.ApiFactory
 import com.example.homework.data.db.AppDatabase
 import com.example.homework.data.db.dao.CityDao
 import com.example.homework.data.models.CityData
+import com.example.homework.data.repositories.CityRepositoryImpl
+import com.example.homework.data.repositories.LocationRepository
 import com.example.homework.domain.GetCitiesUseCase
 import com.example.homework.domain.GetDestinationUseCase
 import com.example.homework.presenation.models.CityPresenter
@@ -45,9 +47,16 @@ class FullWeatherInfoActivity : AppCompatActivity() {
 
         db = AppDatabase(applicationContext)
         cityDao = db.getCityDao()
-        getCitiesUseCase = GetCitiesUseCase(cityDao)
+        getCitiesUseCase = GetCitiesUseCase(
+            CityRepositoryImpl(
+                cityDao,
+                ApiFactory.weatherApi
+            )
+        )
         getDestinationUseCase = GetDestinationUseCase(
-            fusedLocationProviderClient = FusedLocationProviderClient(applicationContext)
+            locationRepository = LocationRepository(
+                FusedLocationProviderClient(applicationContext)
+            )
         )
 
         cityId = intent.getIntExtra("city_id", -1)

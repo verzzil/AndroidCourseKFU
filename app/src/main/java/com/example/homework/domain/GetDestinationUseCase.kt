@@ -6,9 +6,8 @@ import com.example.homework.data.repositories.LocationRepository
 import com.google.android.gms.location.FusedLocationProviderClient
 
 class GetDestinationUseCase(
-    fusedLocationProviderClient: FusedLocationProviderClient
+    val locationRepository: LocationRepository
 ) {
-    private var locationRepository : LocationRepository = LocationRepository(fusedLocationProviderClient)
 
     suspend fun getLocation() : Location =
         locationRepository.getLocation()

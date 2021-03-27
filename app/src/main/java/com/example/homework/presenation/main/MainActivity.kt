@@ -15,9 +15,12 @@ import androidx.core.app.ActivityCompat
 import androidx.lifecycle.lifecycleScope
 import com.example.homework.R
 import com.example.homework.data.adapters.CityAdapter
+import com.example.homework.data.api.ApiFactory
 import com.example.homework.data.db.AppDatabase
 import com.example.homework.data.db.dao.CityDao
 import com.example.homework.data.models.CityData
+import com.example.homework.data.repositories.CityRepositoryImpl
+import com.example.homework.data.repositories.LocationRepository
 import com.example.homework.domain.GetCitiesUseCase
 import com.example.homework.domain.GetDestinationUseCase
 import com.example.homework.domain.models.CityDomain
@@ -45,9 +48,16 @@ class MainActivity : AppCompatActivity() {
 
         db = AppDatabase(applicationContext)
         cityDao = db.getCityDao()
-        getCitiesUseCase = GetCitiesUseCase(cityDao)
+        getCitiesUseCase = GetCitiesUseCase(
+            CityRepositoryImpl(
+                cityDao,
+                ApiFactory.weatherApi
+            )
+        )
         getDestinationUseCase = GetDestinationUseCase(
-            fusedLocationProviderClient = FusedLocationProviderClient(applicationContext)
+            locationRepository = LocationRepository(
+                FusedLocationProviderClient(applicationContext)
+            )
         )
 
         if (ActivityCompat.checkSelfPermission(
