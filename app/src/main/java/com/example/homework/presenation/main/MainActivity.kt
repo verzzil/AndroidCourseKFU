@@ -24,24 +24,23 @@ import com.example.homework.presenation.fullInfoActivity.FullWeatherInfoActivity
 import com.example.homework.presenation.models.CityPresenter
 import com.google.android.gms.location.FusedLocationProviderClient
 import kotlinx.android.synthetic.main.activity_main.*
+import moxy.MvpAppCompatActivity
+import moxy.presenter.InjectPresenter
+import moxy.presenter.ProvidePresenter
 
-class MainActivity : AppCompatActivity(), MainView {
+class MainActivity : MvpAppCompatActivity(), MainView {
 
     private val locationRequestCode = 100
 
-    private lateinit var db: AppDatabase
-    private lateinit var cityDao: CityDao
+    @InjectPresenter
+    lateinit var presenter: MainPresenter
 
-    private lateinit var presenter: MainPresenter
+    @ProvidePresenter
+    fun providePresenter(): MainPresenter = initPresenter()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
-        db = AppDatabase(applicationContext)
-        cityDao = db.getCityDao()
-
-        presenter = initPresenter()
 
         if (ActivityCompat.checkSelfPermission(
                 this,
@@ -87,10 +86,9 @@ class MainActivity : AppCompatActivity(), MainView {
 
     private fun initPresenter(): MainPresenter =
         MainPresenter(
-            mainView = this,
             getCitiesUseCase = GetCitiesUseCase(
                 CityRepositoryImpl(
-                    cityDao,
+                    AppDatabase(applicationContext).getCityDao(),
                     ApiFactory.weatherApi
                 )
             ),
@@ -121,12 +119,17 @@ class MainActivity : AppCompatActivity(), MainView {
             presenter.onClickOnRv(it.id)
         }
     }
+
     override fun showLoader() {
         loader.visibility = View.VISIBLE
     }
 
     override fun hideLoader() {
         loader.visibility = View.GONE
+    }
+
+    override fun consumerError(throwable: Throwable) {
+        TODO("Not yet implemented")
     }
 
     override fun onRequestPermissionsResult(
@@ -147,6 +150,11 @@ class MainActivity : AppCompatActivity(), MainView {
                 }
             }
         }
+    }
+
+    override fun onDestroy() {
+        presenter.destroy()
+        super.onDestroy()
     }
 
 }

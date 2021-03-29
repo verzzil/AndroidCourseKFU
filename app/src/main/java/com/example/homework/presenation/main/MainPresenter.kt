@@ -1,45 +1,43 @@
 package com.example.homework.presenation.main
 
 import android.location.Location
-import androidx.lifecycle.lifecycleScope
-import com.example.homework.data.db.AppDatabase
-import com.example.homework.data.db.dao.CityDao
 import com.example.homework.domain.GetCitiesUseCase
 import com.example.homework.domain.GetDestinationUseCase
 import com.example.homework.presenation.models.CityPresenter
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
+import moxy.MvpPresenter
 import java.lang.Exception
 
 class MainPresenter(
-    private val mainView: MainView,
     private val getCitiesUseCase: GetCitiesUseCase,
     private val getDestinationUseCase: GetDestinationUseCase
-) : CoroutineScope by MainScope() {
+) : MvpPresenter<MainView>(), CoroutineScope by MainScope() {
 
     fun searchCity(query: String) {
         launch {
-            mainView.showLoader()
+            viewState.showLoader()
             try {
                 val currentCity =
                     getCitiesUseCase.getCityByName(query)
 
                 if (currentCity != null)
-                    mainView.startFullInfoActivity(currentCity.id)
+                    viewState.startFullInfoActivity(currentCity.id)
                 else
-                    mainView.makeToast("Такого города нет в базе, а значит нет на свете")
+                    viewState.makeToast("Такого города нет в базе, а значит нет на свете")
             } catch (e: Exception) {
-                mainView.makeToast("Введитет корректное название города")
+                viewState.makeToast("Введитет корректное название города")
             } finally {
-                mainView.hideLoader()
+                viewState.hideLoader()
             }
         }
     }
 
     fun initializeRvAdapter() {
         launch {
-            mainView.showLoader()
+            viewState.showLoader()
             val location: Location? = try {
                 getDestinationUseCase.getLocation()
             } catch (exception: Exception) {
@@ -47,16 +45,20 @@ class MainPresenter(
             }
             val nearCities = getCitiesUseCase.getNearCities(location) as ArrayList<CityPresenter>
 
-            mainView.setRvAdapter(nearCities)
+            viewState.setRvAdapter(nearCities)
 
-            mainView.hideLoader()
+            viewState.hideLoader()
         }
     }
 
     fun onClickOnRv(id: Int) {
-        mainView.showLoader()
-        mainView.startFullInfoActivity(id)
-        mainView.hideLoader()
+        viewState.showLoader()
+        viewState.startFullInfoActivity(id)
+        viewState.hideLoader()
+    }
+
+    fun destroy() {
+        cancel()
     }
 
 

@@ -79,10 +79,13 @@ dependencies {
     implementation 'com.mikepenz:pixeden-7-stroke-typeface:1.2.0.3-kotlin@aar'
     implementation 'com.mikepenz:material-design-icons-dx-typeface:5.0.1.0-kotlin@aar'
 
+    // Room
     implementation "androidx.room:room-runtime:2.2.6"
     kapt 'androidx.room:room-compiler:2.2.6'
     implementation 'androidx.room:room-ktx:2.2.6'
 
+
+    // Moxy
     implementation "com.github.moxy-community:moxy:2.2.1"
     implementation "com.github.moxy-community:moxy-androidx:2.2.1"
     kapt "com.github.moxy-community:moxy-compiler:2.2.1"

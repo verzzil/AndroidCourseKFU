@@ -14,22 +14,21 @@ import com.mikepenz.iconics.IconicsDrawable
 import com.mikepenz.iconics.typeface.IIcon
 import com.mikepenz.iconics.utils.toIconicsColor
 import kotlinx.android.synthetic.main.activity_full_weather_info.*
+import moxy.MvpAppCompatActivity
+import moxy.presenter.InjectPresenter
+import moxy.presenter.ProvidePresenter
 
-class FullWeatherInfoActivity : AppCompatActivity(), FullWeatherInfoView {
+class FullWeatherInfoActivity : MvpAppCompatActivity(), FullWeatherInfoView {
 
-    private lateinit var db: AppDatabase
-    private lateinit var cityDao: CityDao
+    @InjectPresenter
+    lateinit var presenter: FullWeatherInfoPresenter
 
-    private lateinit var presenter: FullWeatherInfoPresenter
+    @ProvidePresenter
+    fun providePresenter(): FullWeatherInfoPresenter = initPresenter()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_full_weather_info)
-
-        db = AppDatabase(applicationContext)
-        cityDao = db.getCityDao()
-
-        presenter = initPresenter()
 
         presenter.chooseBackground()
 
@@ -96,10 +95,9 @@ class FullWeatherInfoActivity : AppCompatActivity(), FullWeatherInfoView {
 
     private fun initPresenter(): FullWeatherInfoPresenter =
         FullWeatherInfoPresenter(
-            view = this,
             getCitiesUseCase = GetCitiesUseCase(
                 CityRepositoryImpl(
-                    cityDao,
+                    AppDatabase(applicationContext).getCityDao(),
                     ApiFactory.weatherApi
                 )
             ),
