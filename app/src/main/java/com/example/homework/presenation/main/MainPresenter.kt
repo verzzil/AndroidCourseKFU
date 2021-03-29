@@ -1,44 +1,63 @@
 package com.example.homework.presenation.main
 
-import android.content.Context
-import android.os.Build
-import android.widget.SearchView
-import android.widget.Toast
-import androidx.annotation.RequiresApi
+import android.location.Location
+import androidx.lifecycle.lifecycleScope
+import com.example.homework.data.db.AppDatabase
+import com.example.homework.data.db.dao.CityDao
 import com.example.homework.domain.GetCitiesUseCase
+import com.example.homework.domain.GetDestinationUseCase
+import com.example.homework.presenation.models.CityPresenter
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import java.lang.Exception
 
 class MainPresenter(
-    val appContext: Context,
-    val getCitiesUseCase: GetCitiesUseCase
+    private val mainView: MainView,
+    private val getCitiesUseCase: GetCitiesUseCase,
+    private val getDestinationUseCase: GetDestinationUseCase
 ) : CoroutineScope by MainScope() {
-    fun onSubmitQueryText(searchView: SearchView): SearchView.OnQueryTextListener {
-        return object : SearchView.OnQueryTextListener {
-            @RequiresApi(Build.VERSION_CODES.N)
-            override fun onQueryTextSubmit(query: String?): Boolean {
-                launch {
-                    try {
-                        val currentCity =
-                            getCitiesUseCase.getCityByName(searchView.query.toString())
 
-                    } catch (e: Exception) {
-                        Toast.makeText(
-                            appContext,
-                            "Введитет корректное название города",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    }
-                }
-                return true
-            }
+    fun searchCity(query: String) {
+        launch {
+            mainView.showLoader()
+            try {
+                val currentCity =
+                    getCitiesUseCase.getCityByName(query)
 
-            override fun onQueryTextChange(newText: String?): Boolean {
-                return true
+                if (currentCity != null)
+                    mainView.startFullInfoActivity(currentCity.id)
+                else
+                    mainView.makeToast("Такого города нет в базе, а значит нет на свете")
+            } catch (e: Exception) {
+                mainView.makeToast("Введитет корректное название города")
+            } finally {
+                mainView.hideLoader()
             }
         }
     }
+
+    fun initializeRvAdapter() {
+        launch {
+            mainView.showLoader()
+            val location: Location? = try {
+                getDestinationUseCase.getLocation()
+            } catch (exception: Exception) {
+                null
+            }
+            val nearCities = getCitiesUseCase.getNearCities(location) as ArrayList<CityPresenter>
+
+            mainView.setRvAdapter(nearCities)
+
+            mainView.hideLoader()
+        }
+    }
+
+    fun onClickOnRv(id: Int) {
+        mainView.showLoader()
+        mainView.startFullInfoActivity(id)
+        mainView.hideLoader()
+    }
+
 
 }
