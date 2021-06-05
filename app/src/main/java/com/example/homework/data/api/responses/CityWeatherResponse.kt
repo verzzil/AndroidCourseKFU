@@ -1,4 +1,4 @@
-package com.example.homework.responses
+package com.example.homework.data.api.responses
 
 import com.google.gson.annotations.SerializedName
 

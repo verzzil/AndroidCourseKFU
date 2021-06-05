@@ -1,4 +1,4 @@
-package com.example.homework.api
+package com.example.homework.data.api
 
 import com.example.homework.BuildConfig
 import okhttp3.Interceptor

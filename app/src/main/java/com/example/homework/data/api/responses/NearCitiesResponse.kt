@@ -1,5 +1,5 @@
-package com.example.homework.responses
-import com.example.homework.models.City
+package com.example.homework.data.api.responses
+import com.example.homework.data.models.CityData
 import com.google.gson.annotations.SerializedName
 
 
@@ -9,7 +9,7 @@ data class NearCitiesResponse(
     @SerializedName("count")
     var count: Int?,
     @SerializedName("list")
-    var list: List<City>,
+    var list: List<CityData>,
     @SerializedName("message")
     var message: String?
 )
