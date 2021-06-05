@@ -3,6 +3,7 @@ package com.example.homework.presenation.fullInfoActivity
 import android.annotation.SuppressLint
 import android.icu.text.SimpleDateFormat
 import android.icu.util.Calendar
+import androidx.annotation.VisibleForTesting
 import com.example.homework.R
 import com.example.homework.domain.GetCitiesUseCase
 import com.example.homework.presenation.models.CityPresenter
@@ -60,6 +61,7 @@ class FullWeatherInfoPresenter(
         }
     }
 
+    @VisibleForTesting
     private fun determineWindDirectionIcon(currentCity: CityPresenter?) {
         when (currentCity?.windDirection) {
             "север" -> viewState.setWindDirectionIcon(WeatherIcons.Icon.wic_direction_up)
@@ -73,6 +75,7 @@ class FullWeatherInfoPresenter(
         }
     }
 
+    @VisibleForTesting
     private fun determineWeatherIcon(currentCity: CityPresenter?) {
         when (currentCity?.tempDesc) {
             "небольшой снег с дождём" -> viewState.setWeatherIcon(WeatherIcons.Icon.wic_rain_mix)
